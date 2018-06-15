@@ -20,7 +20,28 @@
 <div style="text-align: center;">
     <div id='vega-view' style=""></div>
 </div>
+
 <r:script>
+let tsaapData = ${raw(interactionInstance.results)};
+console.info(${raw(interactionInstance.specification)})
+console.info(tsaapData)
+if(!_.isEmpty(tsaapData)) {
+    let nbItemAttempt1 = (tsaapData[1] && tsaapData[1].length - 1) || 0;
+    let nbItemAttempt2 = (tsaapData[2] && tsaapData[2].length - 1) || 0;
+    let nbItem = _.max([nbItemAttempt1, nbItemAttempt2])
+
+    console.info(nbItemAttempt1)
+    console.info(nbItemAttempt2)
+    console.info(nbItem)
+
+    let graphData = []
+    _.times(
+      nbItem,
+      (i => graphData.push({category: i, amount: tsaapData[1][i+1]}))
+    )
+
+  console.info(graphData)
+
     let spec = {
         '$schema': 'https://vega.github.io/schema/vega/v4.json',
         'width': 200,
@@ -30,16 +51,17 @@
         'data': [
             {
                 'name': 'table',
-                'values': [
-                    {'category': 'A', 'amount': 28},
-                    {'category': 'B', 'amount': 55},
-                    {'category': 'C', 'amount': 43},
-                    {'category': 'D', 'amount': 91},
-                    {'category': 'E', 'amount': 81},
-                    {'category': 'F', 'amount': 53},
-                    {'category': 'G', 'amount': 19},
-                    {'category': 'H', 'amount': 87}
-                ]
+                'values': graphData,
+                // [
+                //     {'category': 'A', 'amount': 28},
+                //     {'category': 'B', 'amount': 55},
+                //     {'category': 'C', 'amount': 43},
+                //     {'category': 'D', 'amount': 91},
+                //     {'category': 'E', 'amount': 81},
+                //     {'category': 'F', 'amount': 53},
+                //     {'category': 'G', 'amount': 19},
+                //     {'category': 'H', 'amount': 87}
+                // ]
             }
         ],
 
@@ -74,8 +96,19 @@
         ],
 
         'axes': [
-            {'orient': 'bottom', 'scale': 'xscale'},
-            {'orient': 'left', 'scale': 'yscale'}
+            {
+              'orient': 'bottom',
+              'scale': 'xscale',
+              title: 'Réponse choisie'
+              },
+            {
+              'orient': 'left',
+                'scale': 'yscale',
+                grid: true,
+                // tickCount: 4,
+                values: [0, 25, 50, 75, 100],
+                title: 'Pourcentage des votants'
+            }
         ],
 
         'marks': [
@@ -123,7 +156,7 @@
         ]
     };
 
-    var view;
+    let view;
 
     // vega.loader()
     //         .load(json)
@@ -137,6 +170,9 @@
                 .hover()             // enable hover encode set processing
                 .run();
     }
+}
+
+
 </r:script>
 
 <div style='font-size: 1rem;' id='interaction_${interactionInstance.id}_result'>
