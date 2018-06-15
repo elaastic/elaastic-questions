@@ -37,6 +37,8 @@
   <r:layoutResources/>
   <script type="text/javascript"
           src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/javascript"
+          src="https://vega.github.io/vega/vega.min.js"></script>
 
   %{-- TODO Find out how to load CK resources only when required... --}%
   <ckeditor:resources/>
