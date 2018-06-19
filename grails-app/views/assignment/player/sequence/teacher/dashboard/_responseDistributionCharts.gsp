@@ -100,7 +100,7 @@ if(!_.isEmpty(tsaapData)) {
               name: 'color',
               "type": "ordinal",
               "domain": ['true-1', 'false-1', 'true-2', 'false-2'],
-              "range": ['#016936', '#b03060', 'green', 'red']
+              "range": ['#a6d96a', '#fdae61', '#016936', '#b03060']
             }
         ],
 
