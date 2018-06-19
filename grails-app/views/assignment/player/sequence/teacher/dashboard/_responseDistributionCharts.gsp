@@ -87,9 +87,7 @@ if(!_.isEmpty(tsaapData)) {
             },
             {
                 'name': 'yscale',
-                'domain': {
-                    'data': 'table', 'field': 'amount'
-                },
+                'domain': [0, 100],
                 'nice': true,
                 'range': 'height'
             }
