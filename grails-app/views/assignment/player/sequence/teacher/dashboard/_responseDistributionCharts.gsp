@@ -39,7 +39,7 @@ if(!_.isEmpty(tsaapData)) {
     _.times(
       nbItem,
       (i => graphData.push({
-        category: i,
+        category: i+1,
         amount: tsaapData[1][i+1],
         isCorrect: _.contains(correctIndexList, i+1)
       }))
@@ -56,17 +56,7 @@ if(!_.isEmpty(tsaapData)) {
         'data': [
             {
                 'name': 'table',
-                'values': graphData,
-                // [
-                //     {'category': 'A', 'amount': 28},
-                //     {'category': 'B', 'amount': 55},
-                //     {'category': 'C', 'amount': 43},
-                //     {'category': 'D', 'amount': 91},
-                //     {'category': 'E', 'amount': 81},
-                //     {'category': 'F', 'amount': 53},
-                //     {'category': 'G', 'amount': 19},
-                //     {'category': 'H', 'amount': 87}
-                // ]
+                'values': graphData
             }
         ],
 
@@ -95,6 +85,12 @@ if(!_.isEmpty(tsaapData)) {
                 'domain': [0, 100],
                 'nice': true,
                 'range': 'height'
+            },
+            {
+              name: 'color',
+              "type": "ordinal",
+              "domain": [true, false],
+              "range": ['#016936', '#b03060']
             }
         ],
 
@@ -126,11 +122,16 @@ if(!_.isEmpty(tsaapData)) {
                         'y2': {'scale': 'yscale', 'value': 0}
                     },
                     'update': {
-                        'fill': {'value': 'steelblue'}
+                        'fill':
+                          {
+                              scale: 'color',
+                              data: 'table',
+                              'field': 'isCorrect'
+                            }
                     },
                     'hover': {
                         'fill': {
-                            'value': 'red'
+                            'value': 'GoldenRod'
                         }
                     }
                 }
@@ -160,11 +161,8 @@ if(!_.isEmpty(tsaapData)) {
     };
 
     let view;
-
-    // vega.loader()
-    //         .load(json)
-    //         .then(function(data) { render(JSON.parse(data)); });
-    render(spec);
+    
+    render(spec)
 
     function render (spec) {
         view = new vega.View(vega.parse(spec))
