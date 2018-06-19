@@ -36,13 +36,23 @@ if(!_.isEmpty(tsaapData)) {
 
 
     let graphData = []
-    _.times(
-      nbItem,
-      (i => graphData.push({
-        category: i+1,
-        amount: tsaapData[1][i+1],
-        isCorrect: _.contains(correctIndexList, i+1)
-      }))
+
+    _.each([1, 2],
+      attempt => {
+        _.times(
+              nbItem,
+              i => {
+                  let isCorrect = _.contains(correctIndexList, i+1)
+                  tsaapData[attempt] && tsaapData[attempt][i+1] && graphData.push({
+                    category: i+1,
+                    amount: tsaapData[attempt][i+1],
+                    isCorrect: isCorrect,
+                    color: isCorrect+'-'+attempt,
+                    attempt: attempt
+                  })
+              }
+          )
+      }
     )
 
   console.info(graphData)
@@ -77,7 +87,7 @@ if(!_.isEmpty(tsaapData)) {
                 'type': 'band',
                 'domain': {'data': 'table', 'field': 'category'},
                 'range': 'width',
-                'padding': 0.05,
+                'padding': 0.3,
                 'round': true
             },
             {
@@ -89,8 +99,8 @@ if(!_.isEmpty(tsaapData)) {
             {
               name: 'color',
               "type": "ordinal",
-              "domain": [true, false],
-              "range": ['#016936', '#b03060']
+              "domain": ['true-1', 'false-1', 'true-2', 'false-2'],
+              "range": ['#016936', '#b03060', 'green', 'red']
             }
         ],
 
@@ -98,7 +108,7 @@ if(!_.isEmpty(tsaapData)) {
             {
               'orient': 'bottom',
               'scale': 'xscale',
-              title: 'Réponse choisie'
+              title: 'Choix'
               },
             {
               'orient': 'left',
@@ -111,13 +121,46 @@ if(!_.isEmpty(tsaapData)) {
         ],
 
         'marks': [
-            {
+          {
+            type: 'group',
+            from: {
+              facet: {
+                data: 'table',
+                name: 'facet',
+                groupby: 'category'
+              }
+            },
+            encode: {
+              enter: {
+                x: {
+                  scale: 'xscale',
+                  field: 'category'
+                }
+              }
+            },
+            signals: [{
+              name: 'width',
+              update: 'bandwidth(\'xscale\')'
+            }],
+            scales: [
+              {
+                name: 'pos',
+                type: 'band',
+                range: 'width',
+                domain: {
+                  data: 'facet',
+                  field: 'attempt'
+                }
+              }
+            ],
+            marks: [
+              {
                 'type': 'rect',
-                'from': {'data': 'table'},
+                'from': {'data': 'facet'},
                 'encode': {
                     'enter': {
-                        'x': {'scale': 'xscale', 'field': 'category'},
-                        'width': {'scale': 'xscale', 'band': 1},
+                        'x': {'scale': 'pos', 'field': 'attempt'},
+                        'width': {'scale': 'pos', 'band': 1},
                         'y': {'scale': 'yscale', 'field': 'amount'},
                         'y2': {'scale': 'yscale', 'value': 0}
                     },
@@ -126,7 +169,7 @@ if(!_.isEmpty(tsaapData)) {
                           {
                               scale: 'color',
                               data: 'table',
-                              'field': 'isCorrect'
+                              'field': 'color'
                             }
                     },
                     'hover': {
@@ -145,7 +188,7 @@ if(!_.isEmpty(tsaapData)) {
                         'fill': {'value': '#333'}
                     },
                     'update': {
-                        'x': {'scale': 'xscale', 'signal': 'tooltip.category', 'band': 0.5},
+                        'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
                         'y': {'scale': 'yscale', 'signal': 'tooltip.amount', 'offset': -2},
                         'text': {'signal': 'tooltip.amount'},
                         'fillOpacity': [
@@ -157,6 +200,8 @@ if(!_.isEmpty(tsaapData)) {
                     }
                 }
             }
+            ]
+          }
         ]
     };
 
@@ -172,8 +217,6 @@ if(!_.isEmpty(tsaapData)) {
                 .run();
     }
 }
-
-
 </r:script>
 
 <div style='font-size: 1rem;' id='interaction_${interactionInstance.id}_result'>
