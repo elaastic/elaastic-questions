@@ -23,21 +23,26 @@
 
 <r:script>
 let tsaapData = ${raw(interactionInstance.results)};
-console.info(${raw(interactionInstance.specification)})
+let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choiceSpecification)}
+console.info(tsaapChoiceSpecification)
 console.info(tsaapData)
 if(!_.isEmpty(tsaapData)) {
-    let nbItemAttempt1 = (tsaapData[1] && tsaapData[1].length - 1) || 0;
-    let nbItemAttempt2 = (tsaapData[2] && tsaapData[2].length - 1) || 0;
-    let nbItem = _.max([nbItemAttempt1, nbItemAttempt2])
+    let nbItem = tsaapChoiceSpecification.itemCount
+    let correctIndexList = []
+    _.each(
+      tsaapChoiceSpecification.expectedChoiceList,
+      choice => correctIndexList.push(choice.index)
+      )
 
-    console.info(nbItemAttempt1)
-    console.info(nbItemAttempt2)
-    console.info(nbItem)
 
     let graphData = []
     _.times(
       nbItem,
-      (i => graphData.push({category: i, amount: tsaapData[1][i+1]}))
+      (i => graphData.push({
+        category: i,
+        amount: tsaapData[1][i+1],
+        isCorrect: _.contains(correctIndexList, i+1)
+      }))
     )
 
   console.info(graphData)
