@@ -24,199 +24,198 @@
 <r:script>
 let tsaapData = ${raw(interactionInstance.results)};
 let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choiceSpecification)}
-console.info(tsaapChoiceSpecification)
-console.info(tsaapData)
-if(!_.isEmpty(tsaapData)) {
-    let nbItem = tsaapChoiceSpecification.itemCount
-    let correctIndexList = []
-    _.each(
-      tsaapChoiceSpecification.expectedChoiceList,
-      choice => correctIndexList.push(choice.index)
-      )
-
-
-    let graphData = []
-
-    _.each([1, 2],
-      attempt => {
-        _.times(
-              nbItem,
-              i => {
-                  let isCorrect = _.contains(correctIndexList, i+1)
-                  tsaapData[attempt] && tsaapData[attempt][i+1] && graphData.push({
-                    category: i+1,
-                    amount: tsaapData[attempt][i+1],
-                    isCorrect: isCorrect,
-                    color: isCorrect+'-'+attempt,
-                    attempt: attempt
-                  })
-              }
+    console.info(tsaapChoiceSpecification)
+    console.info(tsaapData)
+    if(!_.isEmpty(tsaapData)) {
+        let nbItem = tsaapChoiceSpecification.itemCount
+        let correctIndexList = []
+        _.each(
+          tsaapChoiceSpecification.expectedChoiceList,
+          choice => correctIndexList.push(choice.index)
           )
-      }
-    )
 
-  console.info(graphData)
 
-    let spec = {
-        '$schema': 'https://vega.github.io/schema/vega/v4.json',
-        'width': 200,
-        'height': 200,
-        'padding': 5,
+        let graphData = []
 
-        'data': [
-            {
-                'name': 'table',
-                'values': graphData
-            }
-        ],
+        _.each([1, 2],
+          attempt => {
+            _.times(
+                  nbItem,
+                  i => {
+                      let isCorrect = _.contains(correctIndexList, i+1)
+                      tsaapData[attempt] && tsaapData[attempt][i+1] && graphData.push({
+                        category: i+1,
+                        amount: tsaapData[attempt][i+1],
+                        isCorrect: isCorrect,
+                        color: isCorrect+'-'+attempt,
+                        attempt: attempt
+                      })
+                  }
+              )
+          }
+        )
 
-        'signals': [
-            {
-                'name': 'tooltip',
-                'value': {},
-                'on': [
-                    {'events': 'rect:mouseover', 'update': 'datum'},
-                    {'events': 'rect:mouseout', 'update': '{}'}
-                ]
-            }
-        ],
+      console.info(graphData)
 
-        'scales': [
-            {
-                'name': 'xscale',
-                'type': 'band',
-                'domain': {'data': 'table', 'field': 'category'},
-                'range': 'width',
-                'padding': 0.3,
-                'round': true
-            },
-            {
-                'name': 'yscale',
-                'domain': [0, 100],
-                'nice': true,
-                'range': 'height'
-            },
-            {
-              name: 'color',
-              "type": "ordinal",
-              "domain": ['true-1', 'false-1', 'true-2', 'false-2'],
-              "range": ['#a6d96a', '#fdae61', '#016936', '#b03060']
-            }
-        ],
+        let spec = {
+            '$schema': 'https://vega.github.io/schema/vega/v4.json',
+            'width': 200,
+            'height': 200,
+            'padding': 5,
 
-        'axes': [
-            {
-              'orient': 'bottom',
-              'scale': 'xscale',
-              title: 'Choix'
-              },
-            {
-              'orient': 'left',
-                'scale': 'yscale',
-                grid: true,
-                // tickCount: 4,
-                values: [0, 25, 50, 75, 100],
-                title: 'Pourcentage des votants'
-            }
-        ],
-
-        'marks': [
-          {
-            type: 'group',
-            from: {
-              facet: {
-                data: 'table',
-                name: 'facet',
-                groupby: 'category'
-              }
-            },
-            encode: {
-              enter: {
-                x: {
-                  scale: 'xscale',
-                  field: 'category'
+            'data': [
+                {
+                    'name': 'table',
+                    'values': graphData
                 }
-              }
-            },
-            signals: [{
-              name: 'width',
-              update: 'bandwidth(\'xscale\')'
-            }],
-            scales: [
-              {
-                name: 'pos',
-                type: 'band',
-                range: 'width',
-                domain: {
-                  data: 'facet',
-                  field: 'attempt'
-                }
-              }
             ],
-            marks: [
+
+            'scales': [
+                {
+                    'name': 'xscale',
+                    'type': 'band',
+                    'domain': {'data': 'table', 'field': 'category'},
+                    'range': 'width',
+                    'padding': 0.3,
+                    'round': true
+                },
+                {
+                    'name': 'yscale',
+                    'domain': [0, 100],
+                    'nice': true,
+                    'range': 'height'
+                },
+                {
+                  name: 'color',
+                  "type": "ordinal",
+                  "domain": ['true-1', 'false-1', 'true-2', 'false-2'],
+                  "range": ['#a6d96a', '#fdae61', '#016936', '#b03060']
+                }
+            ],
+
+            'axes': [
+                {
+                  'orient': 'bottom',
+                  'scale': 'xscale',
+                  title: 'Choix'
+                  },
+                {
+                  'orient': 'left',
+                    'scale': 'yscale',
+                    grid: true,
+                    // tickCount: 4,
+                    values: [0, 25, 50, 75, 100],
+                    title: 'Pourcentage des votants'
+                }
+            ],
+
+            'marks': [
               {
-                'type': 'rect',
-                'from': {'data': 'facet'},
-                'encode': {
-                    'enter': {
-                        'x': {'scale': 'pos', 'field': 'attempt'},
-                        'width': {'scale': 'pos', 'band': 1},
-                        'y': {'scale': 'yscale', 'field': 'amount'},
-                        'y2': {'scale': 'yscale', 'value': 0}
-                    },
-                    'update': {
-                        'fill':
-                          {
-                              scale: 'color',
-                              data: 'table',
-                              'field': 'color'
+                type: 'group',
+                from: {
+                  facet: {
+                    data: 'table',
+                    name: 'facet',
+                    groupby: 'category'
+                  }
+                },
+                encode: {
+                  enter: {
+                    x: {
+                      scale: 'xscale',
+                      field: 'category'
+                    }
+                  }
+                },
+                signals: [
+                  {
+                      name: 'width',
+                      update: 'bandwidth(\'xscale\')'
+                  },
+                  {
+                    'name': 'tooltip',
+                    'value': {},
+                    'on': [
+                        {'events': 'rect:mouseover', 'update': 'datum'},
+                        {'events': 'rect:mouseout', 'update': '{}'}
+                    ]
+                }
+                  ],
+                scales: [
+                  {
+                    name: 'pos',
+                    type: 'band',
+                    range: 'width',
+                    domain: {
+                      data: 'facet',
+                      field: 'attempt'
+                    }
+                  }
+                ],
+                marks: [
+                  {
+                    'type': 'rect',
+                    'from': {'data': 'facet'},
+                    'encode': {
+                        'enter': {
+                            'x': {'scale': 'pos', 'field': 'attempt'},
+                            'width': {'scale': 'pos', 'band': 1},
+                            'y': {'scale': 'yscale', 'field': 'amount'},
+                            'y2': {'scale': 'yscale', 'value': 0}
+                        },
+                        'update': {
+                            'fill':
+                              {
+                                  scale: 'color',
+                                  data: 'table',
+                                  'field': 'color'
+                                }
+                        },
+                        'hover': {
+                            'fill': {
+                                'value': 'GoldenRod'
                             }
-                    },
-                    'hover': {
-                        'fill': {
-                            'value': 'GoldenRod'
+                        }
+                    }
+                },
+                {
+                    'type': 'text',
+                    'encode': {
+                        'enter': {
+                            'align': {'value': 'center'},
+                            'baseline': {'value': 'bottom'},
+                            'fill': {'value': '#333'}
+                        },
+                        'update': {
+                            'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
+                            'y': {'scale': 'yscale', 'signal': 'tooltip.amount', 'offset': -2},
+                            'text': {'signal': 'tooltip.amount'},
+                            'fillOpacity': [
+                                {'test': 'datum === tooltip', 'value': 0},
+                                {
+                                    'value': 1
+                                }
+                            ]
                         }
                     }
                 }
-            },
-            {
-                'type': 'text',
-                'encode': {
-                    'enter': {
-                        'align': {'value': 'center'},
-                        'baseline': {'value': 'bottom'},
-                        'fill': {'value': '#333'}
-                    },
-                    'update': {
-                        'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
-                        'y': {'scale': 'yscale', 'signal': 'tooltip.amount', 'offset': -2},
-                        'text': {'signal': 'tooltip.amount'},
-                        'fillOpacity': [
-                            {'test': 'datum === tooltip', 'value': 0},
-                            {
-                                'value': 1
-                            }
-                        ]
-                    }
-                }
-            }
+                ]
+              }
             ]
-          }
-        ]
-    };
+        };
 
-    let view;
-    
-    render(spec)
+        let view;
 
-    function render (spec) {
-        view = new vega.View(vega.parse(spec))
-                .renderer('canvas')  // set renderer (canvas or svg)
-                .initialize('#vega-view') // initialize view within parent DOM container
-                .hover()             // enable hover encode set processing
-                .run();
+        render(spec)
+
+        function render (spec) {
+            view = new vega.View(vega.parse(spec))
+                    .renderer('canvas')  // set renderer (canvas or svg)
+                    .initialize('#vega-view') // initialize view within parent DOM container
+                    .hover()             // enable hover encode set processing
+                    .run();
+        }
     }
-}
 </r:script>
 
 <div style='font-size: 1rem;' id='interaction_${interactionInstance.id}_result'>
