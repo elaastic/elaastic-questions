@@ -69,6 +69,11 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                     'values': graphData,
                     transform: [
                       {
+                        type: 'formula',
+                        as: 'labelValue',
+                        expr: 'round(datum.amount) + \' %\''
+                      },
+                      {
                         type: 'joinaggregate',
                         fields: ['attempt'],
                         ops: ['max'],
@@ -202,7 +207,7 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                 }
                               ],
                               strokeOpacity: {value: 0},
-                              'stroke': {'value': 'red'},
+                              'stroke': {'value': 'steelblue'},
                             'strokeWidth': { value: 3}
                         },
                         'hover': {
@@ -216,12 +221,13 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         'enter': {
                             'align': {'value': 'center'},
                             'baseline': {'value': 'bottom'},
-                            'fill': {'value': '#333'}
+                            'fill': {'value': '#333'},
+                            fontWeight: {value: 'bold'}
                         },
                         'update': {
                             'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
                             'y': {'scale': 'yscale', 'signal': 'tooltip.amount', 'offset': -2},
-                            'text': {'signal': 'tooltip.amount'},
+                            'text': {'signal': 'tooltip.labelValue'},
                             'fillOpacity': [
                                 {'test': 'datum === tooltip', 'value': 0},
                                 {
