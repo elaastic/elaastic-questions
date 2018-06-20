@@ -200,12 +200,13 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                 {
                                   value: 'yellow'
                                 }
-                              ]
+                              ],
+                              strokeOpacity: {value: 0},
+                              'stroke': {'value': 'red'},
+                            'strokeWidth': { value: 3}
                         },
                         'hover': {
-                            'fill': {
-                                'value': 'GoldenRod'
-                            }
+                          strokeOpacity: {value: 1}
                         }
                     }
                 },
