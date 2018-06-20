@@ -43,7 +43,7 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                   nbItem,
                   i => {
                       let isCorrect = _.contains(correctIndexList, i+1)
-                      tsaapData[attempt] && tsaapData[attempt][i+1] && graphData.push({
+                      tsaapData[attempt] && tsaapData[attempt][i+1] != undefined && graphData.push({
                         category: i+1,
                         amount: tsaapData[attempt][i+1],
                         isCorrect: isCorrect,
@@ -66,7 +66,20 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
             'data': [
                 {
                     'name': 'table',
-                    'values': graphData
+                    'values': graphData,
+                    transform: [
+                      {
+                        type: 'joinaggregate',
+                        fields: ['attempt'],
+                        ops: ['max'],
+                        as: ['nbAttempt']
+                      },
+                      {
+                        type: 'formula',
+                        as: 'colorIndex',
+                        expr: 'datum.nbAttempt - datum.attempt + 1'
+                      }
+                    ]
                 }
             ],
 
@@ -86,10 +99,16 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                     'range': 'height'
                 },
                 {
-                  name: 'color',
-                  "type": "ordinal",
-                  "domain": ['true-1', 'false-1', 'true-2', 'false-2'],
-                  "range": ['#a6d96a', '#fdae61', '#016936', '#b03060']
+                  name: 'correct-color',
+                  type: 'ordinal',
+                  domain: [1, 2],
+                  "range": ['#016936', '#a6d96a']
+                },
+                {
+                  name: 'incorrect-color',
+                  type: 'ordinal',
+                  domain: [1, 2],
+                  "range": ['#b03060', '#fdae61']
                 }
             ],
 
@@ -165,11 +184,23 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         },
                         'update': {
                             'fill':
-                              {
-                                  scale: 'color',
+                              [
+                                {
+                                  test:'datum.isCorrect',
+                                  scale: 'correct-color',
                                   data: 'table',
-                                  'field': 'color'
+                                  'field': 'colorIndex'
+                                },
+                                {
+                                  test:'!datum.isCorrect',
+                                  scale: 'incorrect-color',
+                                  data: 'table',
+                                  'field': 'colorIndex'
+                                },
+                                {
+                                  value: 'yellow'
                                 }
+                              ]
                         },
                         'hover': {
                             'fill': {
