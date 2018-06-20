@@ -34,8 +34,8 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
           choice => correctIndexList.push(choice.index)
           )
 
-
         let graphData = []
+        let hasSecondAttempt = !(typeof tsaapData[2] === 'undefined')
 
         _.each([1, 2],
           attempt => {
@@ -55,11 +55,19 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
           }
         )
 
+        let preferredWidth = nbItem * 75 * (hasSecondAttempt ? 1.75 : 1)
+        let vegaView = $('#vega-view')
+        function computeMaxWidth() { return vegaView.width() - 25; }
+
+        function computeWidth() {
+          return Math.min(preferredWidth, computeMaxWidth())
+        }
+
       console.info(graphData)
 
         let spec = {
             '$schema': 'https://vega.github.io/schema/vega/v4.json',
-            'width': 200,
+            'width': computeWidth(),
             'height': 200,
             'padding': 5,
 
@@ -252,6 +260,11 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                     .initialize('#vega-view') // initialize view within parent DOM container
                     .hover()             // enable hover encode set processing
                     .run();
+
+
+            $(window).on('resize', function() {
+              view.signal('width', computeWidth()).run('enter')
+            })
         }
     }
 </r:script>
