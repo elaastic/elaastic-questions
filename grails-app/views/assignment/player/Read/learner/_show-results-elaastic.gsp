@@ -29,7 +29,35 @@
     <g:set var="sequence" value="${interactionInstance.sequence}"/>
     <g:set var="displayedResultInteraction" value="${sequence.responseSubmissionInteraction}"/>
     <g:set var="choiceSpecification" value="${sequence.statement.getChoiceSpecificationObject()}"/>
+
     <g:if test="${sequence.statement.hasChoices()}">
+
+      <div style="text-align: center;">
+        <div id='vega-view'></div>
+      </div>
+
+      <r:script>
+(function() {
+var i18n = {
+  percentageOfVoters: '${g.message(code: "player.sequence.result.percentageOfVoters").replaceAll("'", "\\\\u0027")}',
+  choice: '${g.message(code: "player.sequence.interaction.choice.label").replaceAll("'", "\\\\u0027")}'
+};
+
+var results = ${raw(displayedResultInteraction.results)};
+// Keep only the last attempt
+if(typeof results[2] !== 'undefined') {
+  delete results[1]
+}
+
+elaastic.renderGraph(
+  '#vega-view',
+        ${raw(displayedResultInteraction.sequence.statement.choiceSpecification)},
+        results,
+   i18n
+);
+}());
+      </r:script>
+
       <g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
       <g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
 

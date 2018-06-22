@@ -18,7 +18,7 @@
 --}%
 
 <div style="text-align: center;">
-    <div id='vega-view' style=""></div>
+    <div id='vega-view'></div>
 </div>
 
 
