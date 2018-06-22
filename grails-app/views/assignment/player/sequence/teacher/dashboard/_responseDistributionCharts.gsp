@@ -206,14 +206,14 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                             'type': 'text',
                             'encode': {
                                 'enter': {
-                                    'align': {'value': 'center'},
+                                    'align': {'value': 'right'},
                                     'baseline': {'value': 'middle'},
                                     'fill': {'value': 'white'},
                                     fontWeight: {value: 'bold'}
                                 },
                                 'update': {
                                     'y': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
-                                    'x': {'scale': 'xscale', 'signal': 'tooltip.value', 'offset': -20},
+                                    'x': {'scale': 'xscale', 'signal': 'tooltip.value', 'offset': -1},
                                     'text': {'signal': 'tooltip.labelValue'},
                                     'fillOpacity': [
                                         {'test': 'datum === tooltip', 'value': 0},
@@ -402,7 +402,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                               {
                                 type: 'formula',
                                 as: 'labelValue',
-                                expr: 'round(datum.value) + \' %\''
+                                expr: 'round(datum.value) + \'%\''
                               },
                               {
                                 type: 'joinaggregate',
