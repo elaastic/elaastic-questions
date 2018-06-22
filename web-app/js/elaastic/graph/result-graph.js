@@ -26,7 +26,8 @@ var elaastic = elaastic || {};
 elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, userChoiceList, i18n) {
   i18n = i18n || {
     percentageOfVoters: 'percentage of voters',
-    choice: 'choice'
+    choice: 'choice',
+    noAnswer: 'none'
   }
 
   if(!_.isEmpty(results)) {
@@ -55,8 +56,19 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
             })
           }
         )
+
+        if(results[attempt] && results[attempt][0]) {
+          graphData.push({
+            choice: 'ø',
+            value: results[attempt][0],
+            noResponse: true,
+            attempt: attempt
+          })
+        }
       }
     )
+
+    console.info(graphData)
 
     var userChoiceListData = _.collect(
       userChoiceList,
@@ -106,6 +118,12 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
           type: 'ordinal',
           domain: [1, 2],
           "range": ['#b03060', '#fdae61']
+        },
+        {
+          name: 'noAnswer-color',
+          type: 'ordinal',
+          domain: [1, 2],
+          "range": ['gold', '#fff3b2']
         }
       ],
 
@@ -200,6 +218,12 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                   'fill':
                     [
                       {
+                        test: 'datum.noResponse',
+                        scale: 'noAnswer-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
                         test:'datum.isCorrect',
                         scale: 'correct-color',
                         data: 'table',
@@ -212,7 +236,7 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                         'field': 'colorIndex'
                       },
                       {
-                        value: 'yellow'
+                        value: 'blue'
                       }
                     ]
                 }
@@ -230,6 +254,12 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                   opacity: {value: 0.25},
                   'fill':
                     [
+                      {
+                        test: 'datum.noResponse',
+                        scale: 'noAnswer-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
                       {
                         test:'datum.isCorrect',
                         scale: 'correct-color',
@@ -303,6 +333,12 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
           type: 'ordinal',
           domain: [1, 2],
           "range": ['#b03060', '#fdae61']
+        },
+        {
+          name: 'noAnswer-color',
+          type: 'ordinal',
+          domain: [1, 2],
+          "range": ['gold', '#fff3b2']
         }
       ],
 
@@ -397,6 +433,12 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                   'fill':
                     [
                       {
+                        test: 'datum.noResponse',
+                        scale: 'noAnswer-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
                         test:'datum.isCorrect',
                         scale: 'correct-color',
                         data: 'table',
@@ -427,6 +469,12 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                   opacity: {value: 0.25},
                   'fill':
                     [
+                      {
+                        test: 'datum.noResponse',
+                        scale: 'noAnswer-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
                       {
                         test:'datum.isCorrect',
                         scale: 'correct-color',
