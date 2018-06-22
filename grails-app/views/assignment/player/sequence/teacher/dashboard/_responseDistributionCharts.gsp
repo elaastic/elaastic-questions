@@ -172,7 +172,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                     'y': {'scale': 'pos', 'field': 'attempt'},
                                     'height': {'scale': 'pos', 'band': 1},
                                     'x': {'scale': 'xscale', 'field': 'value'},
-                                    'x2': {'scale': 'xscale', 'value': 0, offset: -20}
+                                    'x2': {'scale': 'xscale', 'value': 0}
                                 },
                                 'update': {
                                     'fill':
@@ -192,13 +192,38 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                         {
                                           value: 'yellow'
                                         }
-                                      ],
-                                      strokeOpacity: {value: 0},
-                                      'stroke': {'value': 'steelblue'},
-                                    'strokeWidth': { value: 3}
-                                },
-                                'hover': {
-                                  strokeOpacity: {value: 1}
+                                      ]
+                                }
+                              }
+                            },
+                            {
+                            'type': 'rect',
+                            'from': {'data': 'facet'},
+                            'encode': {
+                                'enter': {
+                                    'y': {'scale': 'pos', 'field': 'attempt'},
+                                    'height': {'scale': 'pos', 'band': 1},
+                                    'x': {'scale': 'xscale', 'value': 0},
+                                    'x2': {'scale': 'xscale', 'value': 0, offset: -20},
+                                    opacity: {value: 0.25},
+                                    'fill':
+                                      [
+                                        {
+                                          test:'datum.isCorrect',
+                                          scale: 'correct-color',
+                                          data: 'table',
+                                          'field': 'colorIndex'
+                                        },
+                                        {
+                                          test:'!datum.isCorrect',
+                                          scale: 'incorrect-color',
+                                          data: 'table',
+                                          'field': 'colorIndex'
+                                        },
+                                        {
+                                          value: 'yellow'
+                                        }
+                                      ]
                                 }
                             }
                         },
@@ -327,7 +352,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                     'x': {'scale': 'pos', 'field': 'attempt'},
                                     'width': {'scale': 'pos', 'band': 1},
                                     'y': {'scale': 'yscale', 'field': 'value'},
-                                    'y2': {'scale': 'yscale', 'value': 0, offset: 20}
+                                    'y2': {'scale': 'yscale', 'value': 0}
                                 },
                                 'update': {
                                     'fill':
@@ -347,13 +372,38 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                         {
                                           value: 'yellow'
                                         }
-                                      ],
-                                      strokeOpacity: {value: 0},
-                                      'stroke': {'value': 'steelblue'},
-                                    'strokeWidth': { value: 3}
-                                },
-                                'hover': {
-                                  strokeOpacity: {value: 1}
+                                      ]
+                                }
+                            }
+                        },
+                        {
+                            'type': 'rect',
+                            'from': {'data': 'facet'},
+                            'encode': {
+                                'enter': {
+                                    'x': {'scale': 'pos', 'field': 'attempt'},
+                                    'width': {'scale': 'pos', 'band': 1},
+                                    'y': {'scale': 'yscale', 'value': 0},
+                                    'y2': {'scale': 'yscale', 'value': 0, offset: 20},
+                                    opacity: 0.25,
+                                    'fill':
+                                      [
+                                        {
+                                          test:'datum.isCorrect',
+                                          scale: 'correct-color',
+                                          data: 'table',
+                                          'field': 'colorIndex'
+                                        },
+                                        {
+                                          test:'!datum.isCorrect',
+                                          scale: 'incorrect-color',
+                                          data: 'table',
+                                          'field': 'colorIndex'
+                                        },
+                                        {
+                                          value: 'yellow'
+                                        }
+                                      ]
                                 }
                             }
                         },
