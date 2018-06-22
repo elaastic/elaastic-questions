@@ -222,7 +222,164 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                     ]
                 }
 
-                var verticalSpec = {}
+                var verticalSpec = {
+                  'scales': [
+                        {
+                            'name': 'xscale',
+                            'type': 'band',
+                            'domain': {'data': 'table', 'field': 'choice'},
+                            'range': 'width',
+                            'padding': 0.3,
+                            'round': true
+                        },
+                        {
+                            'name': 'yscale',
+                            'domain': [0, 100],
+                            'nice': true,
+                            'range': 'height'
+                        },
+                        {
+                          name: 'correct-color',
+                          type: 'ordinal',
+                          domain: [1, 2],
+                          "range": ['#016936', '#a6d96a']
+                        },
+                        {
+                          name: 'incorrect-color',
+                          type: 'ordinal',
+                          domain: [1, 2],
+                          "range": ['#b03060', '#fdae61']
+                        }
+                    ],
+
+                    'axes': [
+                        {
+                          'orient': 'bottom',
+                          'scale': 'xscale',
+                          title: 'Choix'
+                          },
+                        {
+                          'orient': 'left',
+                            'scale': 'yscale',
+                            grid: true,
+                            // tickCount: 4,
+                            values: [0, 25, 50, 75, 100],
+                            title: 'Pourcentage des votants'
+                        }
+                    ],
+
+                    'marks': [
+                      {
+                        type: 'group',
+                        from: {
+                          facet: {
+                            data: 'table',
+                            name: 'facet',
+                            groupby: 'choice'
+                          }
+                        },
+                        encode: {
+                          enter: {
+                            x: {
+                              scale: 'xscale',
+                              field: 'choice'
+                            }
+                          }
+                        },
+                        signals: [
+                          {
+                              name: 'width',
+                              update: 'bandwidth(\'xscale\')'
+                          },
+                          {
+                            'name': 'tooltip',
+                            'value': {},
+                            'on': [
+                                {'events': 'rect:mouseover', 'update': 'datum'},
+                                {'events': 'rect:mouseout', 'update': '{}'}
+                            ]
+                        }
+                          ],
+                        scales: [
+                          {
+                            name: 'pos',
+                            type: 'band',
+                            range: 'width',
+                            domain: {
+                              data: 'facet',
+                              field: 'attempt'
+                            }
+                          }
+                        ],
+                        marks: [
+                          {
+                            'type': 'rect',
+                            'from': {'data': 'facet'},
+                            'encode': {
+                                'enter': {
+                                    'x': {'scale': 'pos', 'field': 'attempt'},
+                                    'width': {'scale': 'pos', 'band': 1},
+                                    'y': {'scale': 'yscale', 'field': 'value'},
+                                    'y2': {'scale': 'yscale', 'value': 0}
+                                },
+                                'update': {
+                                    'fill':
+                                      [
+                                        {
+                                          test:'datum.isCorrect',
+                                          scale: 'correct-color',
+                                          data: 'table',
+                                          'field': 'colorIndex'
+                                        },
+                                        {
+                                          test:'!datum.isCorrect',
+                                          scale: 'incorrect-color',
+                                          data: 'table',
+                                          'field': 'colorIndex'
+                                        },
+                                        {
+                                          value: 'yellow'
+                                        }
+                                      ],
+                                      strokeOpacity: {value: 0},
+                                      'stroke': {'value': 'steelblue'},
+                                    'strokeWidth': { value: 3}
+                                },
+                                'hover': {
+                                  strokeOpacity: {value: 1}
+                                }
+                            }
+                        },
+                        {
+                            'type': 'text',
+                            'encode': {
+                                'enter': {
+                                    'align': {'value': 'center'},
+                                    'baseline': {'value': 'bottom'},
+                                    'fill': {'value': '#333'},
+                                    fontWeight: {value: 'bold'}
+                                },
+                                'update': {
+                                    'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
+                                    'y': {'scale': 'yscale', 'signal': 'tooltip.value', 'offset': -2},
+                                    'text': {'signal': 'tooltip.labelValue'},
+                                    'fillOpacity': [
+                                        {'test': 'datum === tooltip', 'value': 0},
+                                        {
+                                            'value': 1
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                        ]
+                      }
+                    ]
+                }
+
+                var orientedSpec =
+                  (nbItem > 5 || computeMaxWidth() < 300) ?
+                    horizontalSpec : verticalSpec
 
                 var spec = {
                     '$schema': 'https://vega.github.io/schema/vega/v4.json',
@@ -255,11 +412,11 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         }
                     ],
 
-                    'scales': horizontalSpec.scales,
+                    'scales': orientedSpec.scales,
 
-                    'axes': horizontalSpec.axes,
+                    'axes': orientedSpec.axes,
 
-                    'marks': horizontalSpec.marks
+                    'marks': orientedSpec.marks
                 };
 
                 var view;
