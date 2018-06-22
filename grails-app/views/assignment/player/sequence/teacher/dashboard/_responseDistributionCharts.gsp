@@ -104,12 +104,12 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                           'scale': 'xscale',
                             grid: true,
                             values: [0, 25, 50, 75, 100],
-                            title: 'Pourcentage des votants'
+                            title: '${g.message(code: "player.sequence.result.percentageOfVoters").replaceAll("'", "\\\\u0027")}'
                           },
                         {
                           'orient': 'left',
                             'scale': 'yscale',
-                            title: 'Choix'
+                            title: '${g.message(code: "player.sequence.interaction.choice.label").replaceAll("'", "\\\\u0027")}'
                         }
                     ],
 
@@ -256,7 +256,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         {
                           'orient': 'bottom',
                           'scale': 'xscale',
-                          title: 'Choix'
+                          title: '${g.message(code: "player.sequence.interaction.choice.label").replaceAll("'", "\\\\u0027")}'
                           },
                         {
                           'orient': 'left',
@@ -264,7 +264,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                             grid: true,
                             // tickCount: 4,
                             values: [0, 25, 50, 75, 100],
-                            title: 'Pourcentage des votants'
+                            title: '${g.message(code: "player.sequence.result.percentageOfVoters").replaceAll("'", "\\\\u0027")}'
                         }
                     ],
 
