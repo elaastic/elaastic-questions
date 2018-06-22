@@ -385,7 +385,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                     'width': {'scale': 'pos', 'band': 1},
                                     'y': {'scale': 'yscale', 'value': 0},
                                     'y2': {'scale': 'yscale', 'value': 0, offset: 20},
-                                    opacity: 0.25,
+                                    opacity: {value: 0.25},
                                     'fill':
                                       [
                                         {
