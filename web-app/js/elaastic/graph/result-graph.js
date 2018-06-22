@@ -344,7 +344,6 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
         {
           'orient': 'bottom',
           'scale': 'xscale',
-          offset: 20,
           title: i18n.choice
         },
         {
@@ -422,8 +421,8 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
               'from': {'data': 'facet'},
               'encode': {
                 'enter': {
-                  'x': {'scale': 'pos', 'field': 'attempt'},
-                  'width': {'scale': 'pos', 'band': 1},
+                  'x': {'scale': 'pos', 'field': 'attempt', offset: 3},
+                  'width': {'scale': 'pos', 'band': 1, offset: -6},
                   'y': {'scale': 'yscale', 'field': 'value'},
                   'y2': {'scale': 'yscale', 'value': 0}
                 },
@@ -460,11 +459,12 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
               'from': {'data': 'facet'},
               'encode': {
                 'enter': {
-                  'x': {'scale': 'pos', 'field': 'attempt'},
-                  'width': {'scale': 'pos', 'band': 1},
+                  'x': {'scale': 'pos', 'field': 'attempt', offset: 3},
+                  'width': {'scale': 'pos', 'band': 1, offset: -6},
                   'y': {'scale': 'yscale', 'value': 0},
-                  'y2': {'scale': 'yscale', 'value': 0, offset: 20},
-                  opacity: {value: 0.25},
+                  'y2': {'scale': 'yscale', 'value': 100},
+                  zindex: {value: 0},
+                  opacity: {value: 0.15},
                   'fill':
                     [
                       {
@@ -488,30 +488,37 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                       {
                         value: 'yellow'
                       }
-                    ]
+                    ],
+                  cornerRadius: {value: 5}
+
                 }
               }
             },
             {
               'type': 'text',
+              'from': {'data': 'facet'},
               'encode': {
                 'enter': {
                   'align': {'value': 'center'},
                   'baseline': {'value': 'bottom'},
                   'fill': {'value': '#333'},
-                  fontWeight: {value: 'bold'}
-                },
-                'update': {
-                  'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
-                  'y': {'scale': 'yscale', 'signal': 'tooltip.value', 'offset': -2},
-                  'text': {'signal': 'tooltip.labelValue'},
-                  'fillOpacity': [
-                    {'test': 'datum === tooltip', 'value': 0},
-                    {
-                      'value': 1
-                    }
-                  ]
-                }
+                  fontWeight: {value: 'bold'},
+
+                  'x': {'scale': 'pos', 'field': 'attempt', 'band': 0.5},
+                  'y': {'scale': 'yscale', 'field': 'value', 'offset': -2},
+                  'text': {'field': 'labelValue'},
+                }//,
+                // 'update': {
+                //   'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
+                //   'y': {'scale': 'yscale', 'signal': 'tooltip.value', 'offset': -2},
+                //   'text': {'signal': 'tooltip.labelValue'},
+                //   'fillOpacity': [
+                //     {'test': 'datum === tooltip', 'value': 0},
+                //     {
+                //       'value': 1
+                //     }
+                //   ]
+                // }
               }
             }
           ]
