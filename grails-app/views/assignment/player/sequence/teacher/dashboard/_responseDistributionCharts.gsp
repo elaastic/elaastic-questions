@@ -69,6 +69,12 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                 }
 
                 var horizontalSpec = {
+                  signals: [
+                    {
+                      name: 'correctedWidth',
+                      update: 'width - 20'
+                    }
+                  ],
                   'scales': [
                         {
                             'name': 'yscale',
@@ -82,7 +88,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                             'name': 'xscale',
                             'domain': [0, 100],
                             'nice': true,
-                            'range': 'width'
+                            'range': [0, {signal: 'correctedWidth'}]
                         },
                         {
                           name: 'correct-color',
@@ -412,6 +418,8 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                             ]
                         }
                     ],
+
+                    signals: orientedSpec.signals,
 
                     'scales': orientedSpec.scales,
 
