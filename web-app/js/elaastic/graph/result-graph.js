@@ -57,7 +57,7 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
           }
         )
 
-        if(results[attempt] && results[attempt][0]) {
+        if((results[1] && results[1][0]) || (results[2] && results[2][0])) {
           graphData.push({
             choice: 'ø',
             value: results[attempt][0],
@@ -67,9 +67,7 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
         }
       }
     )
-
-    console.info(graphData)
-
+    
     var userChoiceListData = _.collect(
       userChoiceList,
       choice => {
