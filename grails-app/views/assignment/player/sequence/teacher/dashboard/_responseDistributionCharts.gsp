@@ -37,6 +37,7 @@ elaastic.renderGraph(
   '#vega-view',
   ${raw(interactionInstance.sequence.statement.choiceSpecification)},
   ${raw(interactionInstance.results)},
+   [],
    i18n   
 );
 }());

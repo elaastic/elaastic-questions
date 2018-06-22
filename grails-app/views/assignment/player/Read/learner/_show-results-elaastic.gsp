@@ -36,6 +36,9 @@
         <div id='vega-view'></div>
       </div>
 
+        <g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
+        <g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
+        
       <r:script>
 (function() {
 var i18n = {
@@ -53,13 +56,12 @@ elaastic.renderGraph(
   '#vega-view',
         ${raw(displayedResultInteraction.sequence.statement.choiceSpecification)},
         results,
-   i18n
+        ${raw(userResponse?.choiceListSpecification ? userResponse.choiceListSpecification : 'null')},
+        i18n
 );
 }());
       </r:script>
 
-      <g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
-      <g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
 
       <g:each var="i" in="${(1..choiceSpecification.itemCount)}">
         <g:set var="choiceStatus"
