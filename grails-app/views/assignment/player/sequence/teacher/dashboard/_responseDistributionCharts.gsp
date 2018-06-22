@@ -28,26 +28,26 @@
     <g:if test='${interactionInstance.sequence.statement.hasChoices()}'>
 
         <r:script>
-let tsaapData = ${raw(interactionInstance.results)};
-let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choiceSpecification)}
+var tsaapData = ${raw(interactionInstance.results)};
+var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choiceSpecification)}
 
             if(!_.isEmpty(tsaapData)) {
-                let nbItem = tsaapChoiceSpecification.itemCount
-                let correctIndexList = []
+                var nbItem = tsaapChoiceSpecification.itemCount
+                var correctIndexList = []
                 _.each(
                   tsaapChoiceSpecification.expectedChoiceList,
                   choice => correctIndexList.push(choice.index)
                   )
 
-                let graphData = []
-                let hasSecondAttempt = !(typeof tsaapData[2] === 'undefined')
+                var graphData = []
+                var hasSecondAttempt = !(typeof tsaapData[2] === 'undefined')
 
                 _.each([1, 2],
                   attempt => {
                     _.times(
                           nbItem,
                           i => {
-                              let isCorrect = _.contains(correctIndexList, i+1)
+                              var isCorrect = _.contains(correctIndexList, i+1)
                               tsaapData[attempt] && tsaapData[attempt][i+1] != undefined && graphData.push({
                                 choice: i+1,
                                 value: tsaapData[attempt][i+1],
@@ -60,59 +60,29 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                   }
                 )
 
-                let preferredWidth = nbItem * 75 * (hasSecondAttempt ? 1.75 : 1)
-                let vegaView = $('#vega-view')
+                var preferredWidth = nbItem * 75 * (hasSecondAttempt ? 1.75 : 1)
+                var vegaView = $('#vega-view')
                 function computeMaxWidth() { return vegaView.width() - 25; }
 
                 function computeWidth() {
                   return Math.min(preferredWidth, computeMaxWidth())
                 }
 
-                let spec = {
-                    '$schema': 'https://vega.github.io/schema/vega/v4.json',
-                    'width': computeWidth(),
-                    'height': 200,
-                    'padding': 5,
-
-                    'data': [
+                var horizontalSpec = {
+                  'scales': [
                         {
-                            'name': 'table',
-                            'values': graphData,
-                            transform: [
-                              {
-                                type: 'formula',
-                                as: 'labelValue',
-                                expr: 'round(datum.value) + \' %\''
-                              },
-                              {
-                                type: 'joinaggregate',
-                                fields: ['attempt'],
-                                ops: ['max'],
-                                as: ['nbAttempt']
-                              },
-                              {
-                                type: 'formula',
-                                as: 'colorIndex',
-                                expr: 'datum.nbAttempt - datum.attempt + 1'
-                              }
-                            ]
-                        }
-                    ],
-
-                    'scales': [
-                        {
-                            'name': 'xscale',
+                            'name': 'yscale',
                             'type': 'band',
                             'domain': {'data': 'table', 'field': 'choice'},
-                            'range': 'width',
+                            'range': 'height',
                             'padding': 0.3,
                             'round': true
                         },
                         {
-                            'name': 'yscale',
+                            'name': 'xscale',
                             'domain': [0, 100],
                             'nice': true,
-                            'range': 'height'
+                            'range': 'width'
                         },
                         {
                           name: 'correct-color',
@@ -132,15 +102,14 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         {
                           'orient': 'bottom',
                           'scale': 'xscale',
-                          title: 'Choix'
+                            grid: true,
+                            values: [0, 25, 50, 75, 100],
+                            title: 'Pourcentage des votants'
                           },
                         {
                           'orient': 'left',
                             'scale': 'yscale',
-                            grid: true,
-                            // tickCount: 4,
-                            values: [0, 25, 50, 75, 100],
-                            title: 'Pourcentage des votants'
+                            title: 'Choix'
                         }
                     ],
 
@@ -156,16 +125,16 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         },
                         encode: {
                           enter: {
-                            x: {
-                              scale: 'xscale',
+                            y: {
+                              scale: 'yscale',
                               field: 'choice'
                             }
                           }
                         },
                         signals: [
                           {
-                              name: 'width',
-                              update: 'bandwidth(\'xscale\')'
+                              name: 'height',
+                              update: 'bandwidth(\'yscale\')'
                           },
                           {
                             'name': 'tooltip',
@@ -180,7 +149,7 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                           {
                             name: 'pos',
                             type: 'band',
-                            range: 'width',
+                            range: 'height',
                             domain: {
                               data: 'facet',
                               field: 'attempt'
@@ -193,10 +162,10 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                             'from': {'data': 'facet'},
                             'encode': {
                                 'enter': {
-                                    'x': {'scale': 'pos', 'field': 'attempt'},
-                                    'width': {'scale': 'pos', 'band': 1},
-                                    'y': {'scale': 'yscale', 'field': 'value'},
-                                    'y2': {'scale': 'yscale', 'value': 0}
+                                    'y': {'scale': 'pos', 'field': 'attempt'},
+                                    'height': {'scale': 'pos', 'band': 1},
+                                    'x': {'scale': 'xscale', 'field': 'value'},
+                                    'x2': {'scale': 'xscale', 'value': 0}
                                 },
                                 'update': {
                                     'fill':
@@ -231,13 +200,13 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                             'encode': {
                                 'enter': {
                                     'align': {'value': 'center'},
-                                    'baseline': {'value': 'bottom'},
-                                    'fill': {'value': '#333'},
+                                    'baseline': {'value': 'middle'},
+                                    'fill': {'value': 'white'},
                                     fontWeight: {value: 'bold'}
                                 },
                                 'update': {
-                                    'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
-                                    'y': {'scale': 'yscale', 'signal': 'tooltip.value', 'offset': -2},
+                                    'y': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
+                                    'x': {'scale': 'xscale', 'signal': 'tooltip.value', 'offset': -20},
                                     'text': {'signal': 'tooltip.labelValue'},
                                     'fillOpacity': [
                                         {'test': 'datum === tooltip', 'value': 0},
@@ -251,9 +220,49 @@ let tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         ]
                       }
                     ]
+                }
+
+                var verticalSpec = {}
+
+                var spec = {
+                    '$schema': 'https://vega.github.io/schema/vega/v4.json',
+                    'width': computeWidth(),
+                    'height': 200,
+                    'padding': 5,
+
+                    'data': [
+                        {
+                            'name': 'table',
+                            'values': graphData,
+                            transform: [
+                              {
+                                type: 'formula',
+                                as: 'labelValue',
+                                expr: 'round(datum.value) + \' %\''
+                              },
+                              {
+                                type: 'joinaggregate',
+                                fields: ['attempt'],
+                                ops: ['max'],
+                                as: ['nbAttempt']
+                              },
+                              {
+                                type: 'formula',
+                                as: 'colorIndex',
+                                expr: 'datum.nbAttempt - datum.attempt + 1'
+                              }
+                            ]
+                        }
+                    ],
+
+                    'scales': horizontalSpec.scales,
+
+                    'axes': horizontalSpec.axes,
+
+                    'marks': horizontalSpec.marks
                 };
 
-                let view;
+                var view;
 
                 render(spec)
 
