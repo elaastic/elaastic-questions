@@ -1,0 +1,496 @@
+/*
+ *
+ *  Copyright (C) 2017 Ticetime
+ *
+ *      This program is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU Affero General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU Affero General Public License for more details.
+ *
+ *      You should have received a copy of the GNU Affero General Public License
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/**
+ * @author jtranier
+ */
+
+var elaastic = elaastic || {};
+
+elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, i18n) {
+  i18n = i18n || {
+    percentageOfVoters: 'percentage of voters',
+    choice: 'choice'
+  }
+
+  if(!_.isEmpty(results)) {
+    var nbItem = choiceSpecification.itemCount
+    var correctIndexList = []
+    _.each(
+      choiceSpecification.expectedChoiceList,
+      choice => correctIndexList.push(choice.index)
+    )
+
+    var graphData = []
+    var hasSecondAttempt = !(typeof results[2] === 'undefined')
+
+    _.each([1, 2],
+      attempt => {
+        _.times(
+          nbItem,
+          i => {
+            var isCorrect = _.contains(correctIndexList, i+1)
+            results[attempt] && results[attempt][i+1] != undefined && graphData.push({
+              choice: i+1,
+              value: results[attempt][i+1],
+              isCorrect: isCorrect,
+              color: isCorrect+'-'+attempt,
+              attempt: attempt
+            })
+          }
+        )
+      }
+    )
+
+    var preferredWidth = nbItem * 75 * (hasSecondAttempt ? 1.75 : 1)
+    var vegaView = $(elViewSelector)
+    function computeMaxWidth() { return vegaView.width() - 25; }
+
+    function computeWidth() {
+      return Math.min(preferredWidth, computeMaxWidth())
+    }
+
+    var horizontalSpec = {
+      signals: [
+        {
+          name: 'correctedWidth',
+          update: 'width - 20'
+        }
+      ],
+      'scales': [
+        {
+          'name': 'yscale',
+          'type': 'band',
+          'domain': {'data': 'table', 'field': 'choice'},
+          'range': 'height',
+          'padding': 0.3,
+          'round': true
+        },
+        {
+          'name': 'xscale',
+          'domain': [0, 100],
+          'nice': true,
+          'range': [0, {signal: 'correctedWidth'}]
+        },
+        {
+          name: 'correct-color',
+          type: 'ordinal',
+          domain: [1, 2],
+          "range": ['#016936', '#a6d96a']
+        },
+        {
+          name: 'incorrect-color',
+          type: 'ordinal',
+          domain: [1, 2],
+          "range": ['#b03060', '#fdae61']
+        }
+      ],
+
+      'axes': [
+        {
+          'orient': 'bottom',
+          'scale': 'xscale',
+          grid: true,
+          values: [0, 25, 50, 75, 100],
+          title: i18n.percentageOfVoters
+        },
+        {
+          'orient': 'left',
+          'scale': 'yscale',
+          offset: 20,
+          title: i18n.choice
+        }
+      ],
+
+      'marks': [
+        {
+          type: 'group',
+          from: {
+            facet: {
+              data: 'table',
+              name: 'facet',
+              groupby: 'choice'
+            }
+          },
+          encode: {
+            enter: {
+              y: {
+                scale: 'yscale',
+                field: 'choice'
+              }
+            }
+          },
+          signals: [
+            {
+              name: 'height',
+              update: 'bandwidth(\'yscale\')'
+            },
+            {
+              'name': 'tooltip',
+              'value': {},
+              'on': [
+                {'events': 'rect:mouseover', 'update': 'datum'},
+                {'events': 'rect:mouseout', 'update': '{}'}
+              ]
+            }
+          ],
+          scales: [
+            {
+              name: 'pos',
+              type: 'band',
+              range: 'height',
+              domain: {
+                data: 'facet',
+                field: 'attempt'
+              }
+            }
+          ],
+          marks: [
+            {
+              'type': 'rect',
+              'from': {'data': 'facet'},
+              'encode': {
+                'enter': {
+                  'y': {'scale': 'pos', 'field': 'attempt'},
+                  'height': {'scale': 'pos', 'band': 1},
+                  'x': {'scale': 'xscale', 'field': 'value'},
+                  'x2': {'scale': 'xscale', 'value': 0}
+                },
+                'update': {
+                  'fill':
+                    [
+                      {
+                        test:'datum.isCorrect',
+                        scale: 'correct-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
+                        test:'!datum.isCorrect',
+                        scale: 'incorrect-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
+                        value: 'yellow'
+                      }
+                    ]
+                }
+              }
+            },
+            {
+              'type': 'rect',
+              'from': {'data': 'facet'},
+              'encode': {
+                'enter': {
+                  'y': {'scale': 'pos', 'field': 'attempt'},
+                  'height': {'scale': 'pos', 'band': 1},
+                  'x': {'scale': 'xscale', 'value': 0},
+                  'x2': {'scale': 'xscale', 'value': 0, offset: -20},
+                  opacity: {value: 0.25},
+                  'fill':
+                    [
+                      {
+                        test:'datum.isCorrect',
+                        scale: 'correct-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
+                        test:'!datum.isCorrect',
+                        scale: 'incorrect-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
+                        value: 'yellow'
+                      }
+                    ]
+                }
+              }
+            },
+            {
+              'type': 'text',
+              'encode': {
+                'enter': {
+                  'align': {'value': 'right'},
+                  'baseline': {'value': 'middle'},
+                  'fill': {'value': 'white'},
+                  fontWeight: {value: 'bold'}
+                },
+                'update': {
+                  'y': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
+                  'x': {'scale': 'xscale', 'signal': 'tooltip.value', 'offset': -1},
+                  'text': {'signal': 'tooltip.labelValue'},
+                  'fillOpacity': [
+                    {'test': 'datum === tooltip', 'value': 0},
+                    {
+                      'value': 1
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    var verticalSpec = {
+      'scales': [
+        {
+          'name': 'xscale',
+          'type': 'band',
+          'domain': {'data': 'table', 'field': 'choice'},
+          'range': 'width',
+          'padding': 0.3,
+          'round': true
+        },
+        {
+          'name': 'yscale',
+          'domain': [0, 100],
+          'nice': true,
+          'range': 'height'
+        },
+        {
+          name: 'correct-color',
+          type: 'ordinal',
+          domain: [1, 2],
+          "range": ['#016936', '#a6d96a']
+        },
+        {
+          name: 'incorrect-color',
+          type: 'ordinal',
+          domain: [1, 2],
+          "range": ['#b03060', '#fdae61']
+        }
+      ],
+
+      'axes': [
+        {
+          'orient': 'bottom',
+          'scale': 'xscale',
+          offset: 20,
+          title: i18n.choice
+        },
+        {
+          'orient': 'left',
+          'scale': 'yscale',
+          grid: true,
+          values: [0, 25, 50, 75, 100],
+          title: i18n.percentageOfVoters
+        }
+      ],
+
+      'marks': [
+        {
+          type: 'group',
+          from: {
+            facet: {
+              data: 'table',
+              name: 'facet',
+              groupby: 'choice'
+            }
+          },
+          encode: {
+            enter: {
+              x: {
+                scale: 'xscale',
+                field: 'choice'
+              }
+            }
+          },
+          signals: [
+            {
+              name: 'width',
+              update: 'bandwidth(\'xscale\')'
+            },
+            {
+              'name': 'tooltip',
+              'value': {},
+              'on': [
+                {'events': 'rect:mouseover', 'update': 'datum'},
+                {'events': 'rect:mouseout', 'update': '{}'}
+              ]
+            }
+          ],
+          scales: [
+            {
+              name: 'pos',
+              type: 'band',
+              range: 'width',
+              domain: {
+                data: 'facet',
+                field: 'attempt'
+              }
+            }
+          ],
+          marks: [
+            {
+              'type': 'rect',
+              'from': {'data': 'facet'},
+              'encode': {
+                'enter': {
+                  'x': {'scale': 'pos', 'field': 'attempt'},
+                  'width': {'scale': 'pos', 'band': 1},
+                  'y': {'scale': 'yscale', 'field': 'value'},
+                  'y2': {'scale': 'yscale', 'value': 0}
+                },
+                'update': {
+                  'fill':
+                    [
+                      {
+                        test:'datum.isCorrect',
+                        scale: 'correct-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
+                        test:'!datum.isCorrect',
+                        scale: 'incorrect-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
+                        value: 'yellow'
+                      }
+                    ]
+                }
+              }
+            },
+            {
+              'type': 'rect',
+              'from': {'data': 'facet'},
+              'encode': {
+                'enter': {
+                  'x': {'scale': 'pos', 'field': 'attempt'},
+                  'width': {'scale': 'pos', 'band': 1},
+                  'y': {'scale': 'yscale', 'value': 0},
+                  'y2': {'scale': 'yscale', 'value': 0, offset: 20},
+                  opacity: {value: 0.25},
+                  'fill':
+                    [
+                      {
+                        test:'datum.isCorrect',
+                        scale: 'correct-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
+                        test:'!datum.isCorrect',
+                        scale: 'incorrect-color',
+                        data: 'table',
+                        'field': 'colorIndex'
+                      },
+                      {
+                        value: 'yellow'
+                      }
+                    ]
+                }
+              }
+            },
+            {
+              'type': 'text',
+              'encode': {
+                'enter': {
+                  'align': {'value': 'center'},
+                  'baseline': {'value': 'bottom'},
+                  'fill': {'value': '#333'},
+                  fontWeight: {value: 'bold'}
+                },
+                'update': {
+                  'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
+                  'y': {'scale': 'yscale', 'signal': 'tooltip.value', 'offset': -2},
+                  'text': {'signal': 'tooltip.labelValue'},
+                  'fillOpacity': [
+                    {'test': 'datum === tooltip', 'value': 0},
+                    {
+                      'value': 1
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    var orientedSpec =
+      (nbItem > 5 || computeMaxWidth() < 300) ?
+        horizontalSpec : verticalSpec
+
+    var spec = {
+      '$schema': 'https://vega.github.io/schema/vega/v4.json',
+      'width': computeWidth(),
+      'height': 200,
+      'padding': 5,
+
+      'data': [
+        {
+          'name': 'table',
+          'values': graphData,
+          transform: [
+            {
+              type: 'formula',
+              as: 'labelValue',
+              expr: 'round(datum.value) + \'%\''
+            },
+            {
+              type: 'joinaggregate',
+              fields: ['attempt'],
+              ops: ['max'],
+              as: ['nbAttempt']
+            },
+            {
+              type: 'formula',
+              as: 'colorIndex',
+              expr: 'datum.nbAttempt - datum.attempt + 1'
+            }
+          ]
+        }
+      ],
+
+      signals: orientedSpec.signals,
+
+      'scales': orientedSpec.scales,
+
+      'axes': orientedSpec.axes,
+
+      'marks': orientedSpec.marks
+    };
+
+    var view;
+
+    render(spec)
+
+    function render (spec) {
+      view = new vega.View(vega.parse(spec))
+        .renderer('canvas')  // set renderer (canvas or svg)
+        .initialize(elViewSelector) // initialize view within parent DOM container
+        .hover()             // enable hover encode set processing
+        .run();
+
+
+      $(window).on('resize', function() {
+        view.signal('width', computeWidth()).run('enter')
+      })
+    }
+  }
+}
