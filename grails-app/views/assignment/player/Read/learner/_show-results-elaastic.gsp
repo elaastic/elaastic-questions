@@ -16,6 +16,7 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
+<r:require module="elaastic_graph_result"></r:require>
 
 <div class="ui segment">
   <div class="ui dividing header">
