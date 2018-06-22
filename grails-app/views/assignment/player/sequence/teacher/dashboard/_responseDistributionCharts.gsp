@@ -109,6 +109,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         {
                           'orient': 'left',
                             'scale': 'yscale',
+                            offset: 20,
                             title: '${g.message(code: "player.sequence.interaction.choice.label").replaceAll("'", "\\\\u0027")}'
                         }
                     ],
@@ -165,7 +166,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                     'y': {'scale': 'pos', 'field': 'attempt'},
                                     'height': {'scale': 'pos', 'band': 1},
                                     'x': {'scale': 'xscale', 'field': 'value'},
-                                    'x2': {'scale': 'xscale', 'value': 0}
+                                    'x2': {'scale': 'xscale', 'value': 0, offset: -20}
                                 },
                                 'update': {
                                     'fill':
@@ -256,13 +257,13 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                         {
                           'orient': 'bottom',
                           'scale': 'xscale',
+                          offset: 20,
                           title: '${g.message(code: "player.sequence.interaction.choice.label").replaceAll("'", "\\\\u0027")}'
                           },
                         {
                           'orient': 'left',
                             'scale': 'yscale',
                             grid: true,
-                            // tickCount: 4,
                             values: [0, 25, 50, 75, 100],
                             title: '${g.message(code: "player.sequence.result.percentageOfVoters").replaceAll("'", "\\\\u0027")}'
                         }
@@ -320,7 +321,7 @@ var tsaapChoiceSpecification = ${raw(interactionInstance.sequence.statement.choi
                                     'x': {'scale': 'pos', 'field': 'attempt'},
                                     'width': {'scale': 'pos', 'band': 1},
                                     'y': {'scale': 'yscale', 'field': 'value'},
-                                    'y2': {'scale': 'yscale', 'value': 0}
+                                    'y2': {'scale': 'yscale', 'value': 0, offset: 20}
                                 },
                                 'update': {
                                     'fill':
