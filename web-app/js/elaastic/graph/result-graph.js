@@ -136,7 +136,6 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
         {
           'orient': 'left',
           'scale': 'yscale',
-          offset: 20,
           title: i18n.choice
         }
       ],
@@ -207,8 +206,8 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
               'from': {'data': 'facet'},
               'encode': {
                 'enter': {
-                  'y': {'scale': 'pos', 'field': 'attempt'},
-                  'height': {'scale': 'pos', 'band': 1},
+                  'y': {'scale': 'pos', 'field': 'attempt', offset: 1},
+                  'height': {'scale': 'pos', 'band': 1, offset: -2},
                   'x': {'scale': 'xscale', 'field': 'value'},
                   'x2': {'scale': 'xscale', 'value': 0}
                 },
@@ -245,11 +244,11 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
               'from': {'data': 'facet'},
               'encode': {
                 'enter': {
-                  'y': {'scale': 'pos', 'field': 'attempt'},
-                  'height': {'scale': 'pos', 'band': 1},
-                  'x': {'scale': 'xscale', 'value': 0},
-                  'x2': {'scale': 'xscale', 'value': 0, offset: -20},
-                  opacity: {value: 0.25},
+                  'y': {'scale': 'pos', 'field': 'attempt', offset: 1},
+                  'height': {'scale': 'pos', 'band': 1, offset: -2},
+                  'x': {'scale': 'xscale', 'value': 0, offset: -2},
+                  'x2': {'scale': 'xscale', 'value': 0, offset: -5},
+                  opacity: {value: 0.75},
                   'fill':
                     [
                       {
@@ -279,23 +278,16 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
             },
             {
               'type': 'text',
+              'from': {'data': 'facet'},
               'encode': {
                 'enter': {
-                  'align': {'value': 'right'},
+                  'align': {'value': 'left'},
                   'baseline': {'value': 'middle'},
-                  'fill': {'value': 'white'},
-                  fontWeight: {value: 'bold'}
-                },
-                'update': {
-                  'y': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
-                  'x': {'scale': 'xscale', 'signal': 'tooltip.value', 'offset': -1},
-                  'text': {'signal': 'tooltip.labelValue'},
-                  'fillOpacity': [
-                    {'test': 'datum === tooltip', 'value': 0},
-                    {
-                      'value': 1
-                    }
-                  ]
+                  'fill': {'value': 'black'},
+                  fontWeight: {value: 'bold'},
+                  y: {'scale': 'pos', 'field': 'attempt', 'band': 0.5},
+                  x: {'scale': 'xscale', 'field': 'value', 'offset': 2},
+                  text: {field: 'labelValue'}
                 }
               }
             }
