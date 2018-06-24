@@ -64,47 +64,7 @@ elaastic.renderGraph(
       </r:script>
 
 
-      <g:each var="i" in="${(1..choiceSpecification.itemCount)}">
-        <g:set var="choiceStatus"
-               value="${choiceSpecification.expectedChoiceListContainsChoiceWithIndex(i) ? 'green' : 'red'}"/>
-        <g:set var="percentResult" value="${resultList[i]}"/>
 
-        <div class="ui ${choiceStatus} progress" data-percent="${percentResult}">
-          <div class="bar">
-            <div class="progress"></div>
-          </div>
-
-          <div class="label">
-            <g:if test="${userResponse?.choiceList()?.contains(i)}">
-              <g:set var="suffix"
-                     value="${choiceSpecification.choiceWithIndexInExpectedChoiceList(i)?.score > 0 ? 'up' : 'down'}"/>
-              <i class="thumbs ${suffix} icon"></i>
-
-            </g:if>
-            ${message(code: "player.sequence.interaction.choice.label")} ${i}
-          </div>
-        </div>
-
-      </g:each>
-      <g:set var="percentResult" value="${resultList[0]}"/>
-
-      <g:if test="${percentResult}">
-        <div class="ui top attached warning small message">
-          <div class="header">
-            ${message(code: "player.sequence.interaction.NoResponse.label")}
-          </div>
-        </div>
-
-        <div class="ui bottom attached segment" style="margin-bottom: 1rem;">
-          <div class="ui warning compact progress"
-               data-percent="${percentResult}">
-            <div class="bar">
-              <div class="progress"></div>
-            </div>
-          </div>
-        </div>
-
-      </g:if>
       <div class="ui message">
         <g:if test="${userResponse?.score != null}">
           ${message(code: "player.sequence.interaction.read.learner.show.score.message")}
@@ -143,10 +103,3 @@ elaastic.renderGraph(
 
   </div>
 </div>
-
-<r:script>
-$('#interaction_${interactionInstance.id}_result .ui.progress').progress({
-  autoSuccess: false,
-  showActivity: false
-});
-</r:script>
