@@ -150,15 +150,30 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
           from: {data: 'userChoiceList'},
           encode: {
             enter: {
-              shape: {value: 'M0,.5L.6,.8L.5,.1L1,-.3L.3,-.4L0,-1L-.3,-.4L-1,-.3L-.5,.1L-.6,.8L0,.5Z'},
-              size: {value: 200},
-              "fill": {"value": "orange"},
-              fillOpacity: {value: 1},
-              "stroke": {"value": "steelblue"},
-              strokeWidth: {value: 2},
+              shape: {value: 'circle'},
+              size: {value: 300},
+              'stroke':[
+                {
+                  test: 'datum.isCorrect',
+                  value: '#016936'
+                },
+                {
+                  value: '#b03060'
+                }
+              ],
+              fill: [
+                {
+                  test: 'datum.isCorrect',
+                  value: '#016936'
+                },
+                {
+                  value: '#b03060'
+                }
+              ],
+              fillOpacity: {value: 0.25},
               'y': {'scale': 'yscale', 'field': 'value', band: 0.5},
-              'x': {'scale': 'xscale', 'value': 0, offset: -10},
-              zindex: {value: 10000}
+              'x': {'scale': 'xscale', 'value': 0, offset: -11},
+              zindex: {value: 1}
             }
           }
         },
