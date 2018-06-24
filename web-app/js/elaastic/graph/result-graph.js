@@ -461,10 +461,10 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                 'enter': {
                   'x': {'scale': 'pos', 'field': 'attempt', offset: 3},
                   'width': {'scale': 'pos', 'band': 1, offset: -6},
-                  'y': {'scale': 'yscale', 'value': 0},
-                  'y2': {'scale': 'yscale', 'value': 100},
+                  'y': {'scale': 'yscale', 'value': 0, offset: 2},
+                  'y2': {'scale': 'yscale', 'value': 0, offset: 5},
                   zindex: {value: 0},
-                  opacity: {value: 0.15},
+                  opacity: {value: 0.75},
                   'fill':
                     [
                       {
@@ -488,8 +488,7 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                       {
                         value: 'yellow'
                       }
-                    ],
-                  cornerRadius: {value: 5}
+                    ]
 
                 }
               }
@@ -507,18 +506,7 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                   'x': {'scale': 'pos', 'field': 'attempt', 'band': 0.5},
                   'y': {'scale': 'yscale', 'field': 'value', 'offset': -2},
                   'text': {'field': 'labelValue'},
-                }//,
-                // 'update': {
-                //   'x': {'scale': 'pos', 'signal': 'tooltip.attempt', 'band': 0.5},
-                //   'y': {'scale': 'yscale', 'signal': 'tooltip.value', 'offset': -2},
-                //   'text': {'signal': 'tooltip.labelValue'},
-                //   'fillOpacity': [
-                //     {'test': 'datum === tooltip', 'value': 0},
-                //     {
-                //       'value': 1
-                //     }
-                //   ]
-                // }
+                }
               }
             }
           ]
