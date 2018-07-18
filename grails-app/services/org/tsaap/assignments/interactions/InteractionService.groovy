@@ -20,10 +20,9 @@ class InteractionService {
     Interaction startNextInteraction(Interaction currentActiveInteraction, User user) {
         Contract.requires(currentActiveInteraction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
         Contract.requires(currentActiveInteraction.state == StateType.afterStop.name(), INTERACTION_IS_NOT_CLOSED)
-        def activeInteraction = setNextActiveInteraction(currentActiveInteraction,user)
+        def activeInteraction = setNextActiveInteraction(currentActiveInteraction, user)
         startInteraction(activeInteraction, user)
     }
-
 
     /**
      * Start an interaction
@@ -64,9 +63,9 @@ class InteractionService {
         Contract.requires(currentActiveInteraction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
         Contract.requires(currentActiveInteraction.state == StateType.afterStop.name(), INTERACTION_IS_NOT_CLOSED)
         Sequence sequence = currentActiveInteraction.sequence
-        int newRank = currentActiveInteraction.rank+1
+        int newRank = currentActiveInteraction.rank + 1
         if (newRank <= sequence.interactions.size()) {
-            sequence.activeInteraction = sequence.interactions[newRank-1]
+            sequence.activeInteraction = sequence.interactions[newRank - 1]
             sequence.save()
         }
         sequence.activeInteraction
@@ -140,7 +139,9 @@ class InteractionService {
      * @param teacher the teacher
      * @param sequence the sequence
      */
-    InteractionResponse buildResponseBasedOnTeacherExpectedExplanationForASequence(Sequence sequence, User teacher, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
+    InteractionResponse buildResponseBasedOnTeacherExpectedExplanationForASequence(Sequence sequence,
+                                                                                   User teacher,
+                                                                                   ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
         def statement = sequence.statement
         if (!statement.expectedExplanation) {
             return null
@@ -148,13 +149,21 @@ class InteractionService {
         def attempt = sequence.executionIsFaceToFace() ? 1 : 2
         def statementHasChoices = statement.hasChoices()
         def interaction = sequence.responseSubmissionInteraction
-
-        InteractionResponse resp = new InteractionResponse(learner: teacher, explanation: statement.expectedExplanation,
-                confidenceDegree: confidenceDegree.ordinal(), attempt: attempt, interaction: interaction)
+        
+        InteractionResponse resp = new InteractionResponse(
+                learner: teacher,
+                explanation: statement.expectedExplanation,
+                confidenceDegree: confidenceDegree.ordinal(),
+                attempt: attempt,
+                interaction: interaction,
+                teacherExplanation: true
+        )
         if (statementHasChoices) {
-            resp.updateChoiceListSpecification(statement.choiceSpecificationObject?.expectedChoiceList?.collect {
-                it.index
-            })
+            resp.updateChoiceListSpecification(
+                    statement.choiceSpecificationObject?.expectedChoiceList?.collect {
+                        it.index
+                    }
+            )
             resp.updateScore()
         }
         resp.save()
@@ -181,7 +190,7 @@ class InteractionService {
         explanations.eachWithIndex { fakeExplanation, index ->
             def learner = User.load(bootstrapService.fakeUserList[index].id)
             InteractionResponse fakeResp = new InteractionResponse(learner: learner, explanation: fakeExplanation.content,
-                    confidenceDegree: confidenceDegree.ordinal(), attempt:attempt, interaction: interaction)
+                    confidenceDegree: confidenceDegree.ordinal(), attempt: attempt, interaction: interaction)
             if (statementHasChoices && fakeExplanation.correspondingItem) {
                 fakeResp.updateChoiceListSpecification([fakeExplanation.correspondingItem])
                 fakeResp.updateScore()
@@ -191,8 +200,6 @@ class InteractionService {
         }
         res
     }
-
-
 
 
     private static final String ONLY_OWNER_CAN_START_INTERACTION = 'Only owner can start an interaction'

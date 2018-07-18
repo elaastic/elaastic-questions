@@ -35,7 +35,9 @@
       <g:form class="ui form">
         <g:hiddenField name="id" value="${interactionInstance.id}"/>
         <g:render template="/assignment/player/ResponseSubmission/learner/response_form-elaastic"
-                  model="[user                                       : user, interactionInstance: interactionInstance, attempt: 1,
+                  model="[user                                       : user,
+                          interactionInstance: interactionInstance,
+                          attempt: 1,
                           shouldPresentExplanationAndConfidenceFields: shouldPresentExplanationAndConfidenceFields,
                           responseSubmissionSpecificationInstance    : responseSubmissionSpecificationInstance]"/>
         <g:if

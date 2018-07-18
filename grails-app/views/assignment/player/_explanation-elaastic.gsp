@@ -17,24 +17,35 @@
   -
   --}%
 
-<div class="ui info message explanation" style="${theResponse.meanGrade != null ? 'padding-top: 3em;' : ''}">
-  <g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>
+<div class="ui info message explanation">
+    <g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>
 
-  <g:if test="${theResponse.meanGrade != null}">
-    <div class="ui top left attached teal label">
+    <g:if test="${theResponse.meanGrade != null || theResponse.teacherExplanation}">
+        <div class="ui top left attached teal label">
 
-      <g:formatNumber number="${theResponse.meanGrade}"
-                      type="number"
-                      maxFractionDigits="2"/>/5
-      
-      <span class="detail">${nbEvaluation} ${nbEvaluation > 1 ? g.message(code: 'common.evaluations') : g.message(code: 'common.evaluation')}</span>
-    </div>
-  </g:if>
+            <g:if test="${theResponse.meanGrade != null}">
+                <g:formatNumber number="${theResponse.meanGrade}"
+                                type="number"
+                                maxFractionDigits="2"/>/5
 
-  <strong>
-    @${theResponse.learner.username}
-  </strong>
+                <span class="detail"
+                      style="${theResponse.teacherExplanation ? 'margin-right: 1em;' : ''}">${nbEvaluation} ${nbEvaluation > 1 ? g.message(code: 'common.evaluations') : g.message(code: 'common.evaluation')}</span>
+            </g:if>
 
-  <br/>
-  ${raw(theResponse.explanation)}
+            <g:if test="${theResponse.teacherExplanation}">
+                <span style="color: gold"><i class="check icon"></i> <g:message code="player.sequence.teacherExplanation"/>
+                </span>
+            </g:if>
+
+        </div>
+    </g:if>
+
+
+    <strong style="margin-top: 2rem !important; display: inline-block;">
+        @${theResponse.learner.username}
+    </strong>
+
+    <br/>
+    ${raw(theResponse.explanation)}
+
 </div>

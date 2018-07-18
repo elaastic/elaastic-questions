@@ -24,6 +24,7 @@ class InteractionResponse {
     String choiceListSpecification
 
     Float score
+    Boolean teacherExplanation
 
 
     static constraints = {

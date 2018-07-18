@@ -208,8 +208,16 @@ class Sequence {
  */
     List<InteractionResponse> findAllGoodResponses(int attempt = 1) {
         Interaction interaction = responseSubmissionInteraction
-        InteractionResponse.findAllByInteractionAndAttemptAndScore(interaction, attempt, 100f,
-                [sort: "meanGrade", order: "desc"])
+        InteractionResponse.withCriteria {
+            eq('interaction', interaction)
+            eq('attempt', attempt)
+            eq('score', 100f)
+            and {
+                order('teacherExplanation', 'desc')
+                order('meanGrade', 'desc')
+            }
+        }
+
     }
 
 /**
@@ -218,9 +226,15 @@ class Sequence {
  */
     List<InteractionResponse> findAllOpenResponses(int attempt = 1) {
         Interaction interaction = responseSubmissionInteraction
-        def res = InteractionResponse.findAllByInteractionAndAttempt(interaction, attempt,
-                [sort: "meanGrade", order: "desc"])
-        res
+
+        InteractionResponse.withCriteria {
+            eq('interaction', interaction)
+            eq('attempt', attempt)
+            and {
+                order('teacherExplanation', 'desc')
+                order('meanGrade', 'desc')
+            }
+        }
     }
 
 /**
