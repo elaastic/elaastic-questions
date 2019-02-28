@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "How to configure and launch Tsaap-Notes as an external tool from Moodle?"
+title:  "How to configure and launch elaastic-questions as an external tool from Moodle?"
 date:   2017-01-22 14:43:45 +0200
 author: Franck Silvestre
 categories: lti Moodle
@@ -16,7 +16,7 @@ of an external tool.
 
 In all cases, the launch URL for a Tsaap-Notes activity is:
 
-`https://notes.tsaap.eu/tsaap-notes/launch`
+`https://run.elaastic.com/elaastic-questions/launch`
 
 # 1.1 Creation "on the fly" of the corresponding assignment
 
@@ -31,8 +31,8 @@ The screenshot below shows the Moodle form whith the "custom parameters" field.
 
 # 1.2 Linkink to an existing assignment
 
-In Tsaap-Notes, when an assignment is created, a unique global id is associated with the created assignment.
-The screenshot below shows an assignment In tsaap-notes with its associated global unique id.
+In elaastic-questions, when an assignment is created, a unique global id is associated with the created assignment.
+The screenshot below shows an assignment in elaastic-questions with its associated global unique id.
  
 ![Assignment and its id]({{ site.baseurl }}/assets/AssignmentGlobalId.png) 
 

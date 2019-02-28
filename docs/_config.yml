@@ -13,14 +13,14 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: Tsaap-Notes documentation
+title: elaastic-question documentation
 #email: your-email@domain.com
 description: > # this means to ignore newlines until "baseurl:"
-  This site contains the documentation of the Tsaap-Notes platform.
-baseurl: '/tsaap-notes' # the subpath of your site, e.g. /blog
+  This site contains the documentation of the elaastic-questions platform.
+baseurl: '/elaastic-questions' # the subpath of your site, e.g. /blog
 url:
-twitter_username: TsaapNotes
-github_username:  TSaaP
+twitter_username: elaastic_io
+github_username:  elaastic
 
 # Build settings
 markdown: kramdown
