@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "How to configure and launch elaastic-questions as an external tool from Moodle?"
-date:   2017-01-22 14:43:45 +0200
+date:   2019-02-28 14:43:45 +0200
 author: Franck Silvestre
 categories: lti Moodle
 ---
