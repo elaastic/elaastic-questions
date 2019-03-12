@@ -97,6 +97,25 @@
     <i class="yellow browser icon"></i>
   </div>
 
+  <div class="not mobile item"
+       id="hide-aside"
+       onclick="$('#layout-aside').hide(); $('#show-aside').show(); $('#hide-aside').hide()"
+       data-tooltip="${g.message(code: 'common.table-of-content.hide')}"
+       data-position="right center"
+       data-inverted="">
+    <i class="yellow double left angle icon"></i>
+  </div>
+
+  <div class="not mobile item"
+       id="show-aside"
+       style="display: none"
+       onclick="$('#layout-aside').show(); $('#show-aside').hide(); $('#hide-aside').show()"
+       data-tooltip="${g.message(code: 'common.table-of-content.show')}"
+       data-position="right center"
+       data-inverted="">
+    <i class="yellow double right angle icon"></i>
+  </div>
+
   <g:pageProperty name="page.specificMenu"/>
 </div>
 
