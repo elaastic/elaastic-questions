@@ -54,6 +54,8 @@ modules = {
     resource url: 'js/elaastic/graph/result-graph.js'
   }
 
-
+  js_cookie {
+    resource url: 'js/js.cookie.js'
+  }
 
 }

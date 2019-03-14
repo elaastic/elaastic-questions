@@ -21,7 +21,7 @@
 <html>
 <head>
   <meta name="layout" content="3columns-elaastic">
-  <r:require modules="semantic_ui,jquery,elaastic_ui,vue_js"/>
+  <r:require modules="semantic_ui,jquery,elaastic_ui,vue_js,js_cookie"/>
   <title>${assignmentInstance?.title}</title>
 </head>
 

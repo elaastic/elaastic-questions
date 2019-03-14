@@ -99,7 +99,7 @@
 
   <div class="not mobile item"
        id="hide-aside"
-       onclick="$('#layout-aside').hide(); $('#show-aside').show(); $('#hide-aside').hide()"
+       onclick="tableOfContent.hide()"
        data-tooltip="${g.message(code: 'common.table-of-content.hide')}"
        data-position="right center"
        data-inverted="">
@@ -109,12 +109,57 @@
   <div class="not mobile item"
        id="show-aside"
        style="display: none"
-       onclick="$('#layout-aside').show(); $('#show-aside').hide(); $('#hide-aside').show()"
+       onclick="tableOfContent.show()"
        data-tooltip="${g.message(code: 'common.table-of-content.show')}"
        data-position="right center"
        data-inverted="">
     <i class="yellow double right angle icon"></i>
   </div>
+
+  <r:script>
+    /**
+     * if the URL param 'hideToc' has the value 'true' then the toc will be hidden by default
+     * The TOC visibility may be controlled with show/hide button in the menubar. TOC state is stored in a cookie.
+     */
+
+    let tableOfContent = {};
+
+    $(document).ready(function () {
+      let layoutAside = $('#layout-aside');
+      let showAsideBtn = $('#show-aside');
+      let hideAsideBtn = $('#hide-aside');
+      let urlParams = new URLSearchParams(location.search);
+
+      tableOfContent.show = function () {
+        layoutAside.show(); showAsideBtn.hide(); hideAsideBtn.show();
+        urlParams.delete('hideToc');
+        window.location.search = urlParams.toString();
+        Cookies.set('hideToc', 'false');
+      }
+
+      tableOfContent.hide = function () {
+        layoutAside.hide(); showAsideBtn.show(); hideAsideBtn.hide()
+        urlParams.set('hideToc', 'true');
+        Cookies.set('hideToc', 'true');
+      }
+
+
+      if(urlParams.has('hideToc')) {
+        if(urlParams.get('hideToc') === 'true') {
+          Cookies.set('hideToc', 'true');
+        }
+        else {
+          Cookies.remove('hideToc');
+        }
+
+      }
+
+      if(Cookies.get('hideToc') === 'true') {
+        tableOfContent.hide();
+      }
+      
+    });
+  </r:script>
 
   <g:pageProperty name="page.specificMenu"/>
 </div>
