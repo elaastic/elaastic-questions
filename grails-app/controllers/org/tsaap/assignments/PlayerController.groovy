@@ -259,7 +259,7 @@ class PlayerController {
     InteractionResponse response = new InteractionResponse(
         learner: user,
         interaction: interactionInstance,
-        confidenceDegree: params.confidenceDegree as Integer,
+        confidenceDegree: params.confidenceDegree && params.confidenceDegree != "null" ? params.confidenceDegree as Integer : null,
         attempt: attempt
     )
     if (params.explanation) {
