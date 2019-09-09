@@ -256,10 +256,14 @@ class PlayerController {
   }
 
   private def processSubmittedResponse(User user, Interaction interactionInstance, int attempt, def params) {
+    def confDegree = 1
+    try {
+      confDegree = params.confidenceDegree as Integer
+    } catch(Exception e) {}
     InteractionResponse response = new InteractionResponse(
         learner: user,
         interaction: interactionInstance,
-        confidenceDegree: params.confidenceDegree && params.confidenceDegree != "null" ? params.confidenceDegree as Integer : null,
+        confidenceDegree: confDegree,
         attempt: attempt
     )
     if (params.explanation) {

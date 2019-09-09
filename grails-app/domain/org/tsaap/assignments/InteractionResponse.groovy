@@ -17,7 +17,7 @@ class InteractionResponse {
     Integer attempt = 1
 
     String explanation
-    Integer confidenceDegree
+    Integer confidenceDegree = 1
 
     Float meanGrade
 
@@ -27,7 +27,7 @@ class InteractionResponse {
 
 
     static constraints = {
-        confidenceDegree nullable: true
+        confidenceDegree nullable: false
         meanGrade nullable: true
         explanation nullable: true
         score nullable: true
