@@ -21,16 +21,16 @@
  * @author jtranier
  */
 
-var elaastic = elaastic || {};
+var elaastic = elaastic || {}
 
-elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, userChoiceList, i18n) {
+elaastic.renderGraph = function (elViewSelector, choiceSpecification, results, userChoiceList, i18n) {
   i18n = i18n || {
     percentageOfVoters: 'percentage of voters',
     choice: 'choice',
     noAnswer: 'none'
   }
 
-  if(!_.isEmpty(results)) {
+  if (!_.isEmpty(results)) {
     var nbItem = choiceSpecification.itemCount
     var correctIndexList = []
     _.each(
@@ -46,28 +46,36 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
         _.times(
           nbItem,
           i => {
-            var isCorrect = _.contains(correctIndexList, i+1)
-            results[attempt] && results[attempt][i+1] != undefined && graphData.push({
-              choice: i+1,
-              value: results[attempt][i+1],
+            var isCorrect = _.contains(correctIndexList, i + 1)
+            results[attempt] && results[attempt][i + 1] != undefined && graphData.push({
+              choice: i + 1,
+              value: results[attempt][i + 1],
               isCorrect: isCorrect,
-              color: isCorrect+'-'+attempt,
+              color: isCorrect + '-' + attempt,
               attempt: attempt
             })
           }
         )
 
-        if((results[1] && results[1][0]) || (results[2] && results[2][0])) {
+        if (results[2] && ((results[1] && results[1][0]) || (results[2][0]))) {
           graphData.push({
             choice: 'ø',
-            value: results[attempt][0],
+            value: results[attempt] ? results[attempt][0] : 0,
+            noResponse: true,
+            attempt: attempt
+          })
+        } else if (attempt === 1 && results[1] && results[1][0]) {
+          graphData.push({
+            choice: 'ø',
+            value: results[1][0],
             noResponse: true,
             attempt: attempt
           })
         }
+
       }
     )
-    
+
     var userChoiceListData = _.collect(
       userChoiceList,
       choice => {
@@ -77,13 +85,14 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
           isCorrect: isCorrect
         }
       }
-    );
+    )
 
     var preferredWidth = nbItem * 75 * (hasSecondAttempt ? 1.75 : 1)
     var vegaView = $(elViewSelector)
-    function computeMaxWidth() { return vegaView.width() - 25; }
 
-    function computeWidth() {
+    function computeMaxWidth () { return vegaView.width() - 25 }
+
+    function computeWidth () {
       return Math.min(preferredWidth, computeMaxWidth())
     }
 
@@ -113,19 +122,19 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
           name: 'correct-color',
           type: 'ordinal',
           domain: [1, 2],
-          "range": ['#016936', '#a6d96a']
+          'range': ['#016936', '#a6d96a']
         },
         {
           name: 'incorrect-color',
           type: 'ordinal',
           domain: [1, 2],
-          "range": ['#b03060', '#fdae61']
+          'range': ['#b03060', '#fdae61']
         },
         {
           name: 'noAnswer-color',
           type: 'ordinal',
           domain: [1, 2],
-          "range": ['gold', '#fff3b2']
+          'range': ['gold', '#fff3b2']
         }
       ],
 
@@ -152,7 +161,7 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
             enter: {
               shape: {value: 'circle'},
               size: {value: 300},
-              'stroke':[
+              'stroke': [
                 {
                   test: 'datum.isCorrect',
                   value: '#016936'
@@ -240,13 +249,13 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                         'field': 'colorIndex'
                       },
                       {
-                        test:'datum.isCorrect',
+                        test: 'datum.isCorrect',
                         scale: 'correct-color',
                         data: 'table',
                         'field': 'colorIndex'
                       },
                       {
-                        test:'!datum.isCorrect',
+                        test: '!datum.isCorrect',
                         scale: 'incorrect-color',
                         data: 'table',
                         'field': 'colorIndex'
@@ -277,13 +286,13 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                         'field': 'colorIndex'
                       },
                       {
-                        test:'datum.isCorrect',
+                        test: 'datum.isCorrect',
                         scale: 'correct-color',
                         data: 'table',
                         'field': 'colorIndex'
                       },
                       {
-                        test:'!datum.isCorrect',
+                        test: '!datum.isCorrect',
                         scale: 'incorrect-color',
                         data: 'table',
                         'field': 'colorIndex'
@@ -335,19 +344,19 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
           name: 'correct-color',
           type: 'ordinal',
           domain: [1, 2],
-          "range": ['#016936', '#a6d96a']
+          'range': ['#016936', '#a6d96a']
         },
         {
           name: 'incorrect-color',
           type: 'ordinal',
           domain: [1, 2],
-          "range": ['#b03060', '#fdae61']
+          'range': ['#b03060', '#fdae61']
         },
         {
           name: 'noAnswer-color',
           type: 'ordinal',
           domain: [1, 2],
-          "range": ['gold', '#fff3b2']
+          'range': ['gold', '#fff3b2']
         }
       ],
 
@@ -374,7 +383,7 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
             enter: {
               shape: {value: 'circle'},
               size: {value: 300},
-              'stroke':[
+              'stroke': [
                 {
                   test: 'datum.isCorrect',
                   value: '#016936'
@@ -462,13 +471,13 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                         'field': 'colorIndex'
                       },
                       {
-                        test:'datum.isCorrect',
+                        test: 'datum.isCorrect',
                         scale: 'correct-color',
                         data: 'table',
                         'field': 'colorIndex'
                       },
                       {
-                        test:'!datum.isCorrect',
+                        test: '!datum.isCorrect',
                         scale: 'incorrect-color',
                         data: 'table',
                         'field': 'colorIndex'
@@ -500,13 +509,13 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
                         'field': 'colorIndex'
                       },
                       {
-                        test:'datum.isCorrect',
+                        test: 'datum.isCorrect',
                         scale: 'correct-color',
                         data: 'table',
                         'field': 'colorIndex'
                       },
                       {
-                        test:'!datum.isCorrect',
+                        test: '!datum.isCorrect',
                         scale: 'incorrect-color',
                         data: 'table',
                         'field': 'colorIndex'
@@ -586,9 +595,9 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
       'axes': orientedSpec.axes,
 
       'marks': orientedSpec.marks
-    };
+    }
 
-    var view;
+    var view
 
     render(spec)
 
@@ -597,10 +606,9 @@ elaastic.renderGraph = function(elViewSelector, choiceSpecification, results, us
         .renderer('canvas')  // set renderer (canvas or svg)
         .initialize(elViewSelector) // initialize view within parent DOM container
         .hover()             // enable hover encode set processing
-        .run();
+        .run()
 
-
-      $(window).on('resize', function() {
+      $(window).on('resize', function () {
         view.signal('width', computeWidth()).run('enter')
       })
     }
